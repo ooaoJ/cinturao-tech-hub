@@ -6,14 +6,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-/**
- * @method static create(array $array)
- * @method static where(string $string, mixed $matricula)
- * @property mixed $cargo_id
- */
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
+
+    protected $table = 'users';
 
     protected $fillable = [
         'name',
@@ -31,6 +28,40 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
+
+    public function cargo()
+    {
+        return $this->belongsTo(Cargo::class);
+    }
+
+    public function cidade()
+    {
+        return $this->belongsTo(Cidade::class);
+    }
+
+    public function equipes()
+    {
+        return $this->belongsToMany(Equipe::class, 'equipe_user')
+            ->withPivot('funcao_id')
+            ->withTimestamps();
+    }
+
+    public function equipesOrientadas()
+    {
+        return $this->hasMany(Equipe::class, 'orientador_id');
+    }
+
+    public function equipeUsuarios()
+    {
+        return $this->hasMany(EquipeUser::class);
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -40,14 +71,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
-//    public function cargo()
-//    {
-//        return $this->belongsTo(Cargo::class);
-//    }
-//
-//    public function cidade()
-//    {
-//        return $this->belongsTo(Cidade::class);
-//    }
 }
