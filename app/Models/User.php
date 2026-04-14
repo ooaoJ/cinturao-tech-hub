@@ -62,6 +62,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(EquipeUser::class);
     }
 
+    public function avaliacoesFeitas()
+    {
+        return $this->hasMany(Avaliacao::class, 'avaliador_id');
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -71,4 +76,5 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
 }
