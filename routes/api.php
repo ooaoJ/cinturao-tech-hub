@@ -7,9 +7,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProjetoController;
 use App\Http\Controllers\Api\TesteController;
 use App\Http\Controllers\Api\DocumentoProjetoController;
+use App\Http\Controllers\Api\AvaliacaoController;
+use App\Http\Controllers\Api\RankingController;
+use App\Http\Controllers\Api\PublicoController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+Route::prefix('publico')->group(function () {
+    Route::get('/projetos', [PublicoController::class, 'projetos']);
+    Route::get('/projetos/{id}', [PublicoController::class, 'projeto']);
+});
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -44,4 +52,12 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{projetoId}/documentos', [DocumentoProjetoController::class, 'index']);
         Route::post('/{projetoId}/documentos', [DocumentoProjetoController::class, 'store']);
     });
+
+    Route::prefix('projetos')->group(function () {
+        Route::get('/{projetoId}/avaliacoes', [AvaliacaoController::class, 'index']);
+        Route::post('/{projetoId}/avaliacoes', [AvaliacaoController::class, 'store']);
+    });
+
+    Route::get('/ranking', [RankingController::class, 'index']);
+
 });
