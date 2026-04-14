@@ -76,9 +76,15 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            if ($user->status !== 'aprovado') {
+            if ($user->status === 'pendente') {
                 return response()->json([
                     'message' => 'O usuário ainda não foi aprovado.',
+                ], 403);
+            }
+
+            if ($user->status === 'reprovado') {
+                return response()->json([
+                    'message' => 'O usuário teve o cadastro reprovado.',
                 ], 403);
             }
 
